@@ -1,2 +1,2 @@
-# Intelligent-Unmanned-Base
-This repository is designed for Intelligent-Unmanned-Base in Northwestern Polytechnical University(NPU). In this repository, we store our code and something else there.
+# 智能无人系统创新实践基地-机器人部
+这个仓库由西北工业大学(NPU)智能无人系统创新实践基地-机器人部的所有成员共同维护。这个仓库会存放比赛使用的代码、视频文件等，日常维护日志也存放在里面。
