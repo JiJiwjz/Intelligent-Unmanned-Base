@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="map"         default=""/>
+    <arg name="map_frame"   default="map"/>
+
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+
+    <include file="$(find navigation)/launch/navigation.launch">
+        <arg name="map"         value="$(arg map)"/>
+        <arg name="master_name" value="/"/>
+        <arg name="robot_name"  value="/"/>
+    </include>
+
+    <node pkg="xf_mic_asr_offline" name="voice_control_navigation" type="voice_control_navigation.py" output="screen">
+        <param name="map_frame" value="$(arg map_frame)"/>
+        <param name="costmap"   value="/move_base/local_costmap/costmap"/>
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find navigation)/rviz/without_namespace/navigation.rviz"/>
+</launch>

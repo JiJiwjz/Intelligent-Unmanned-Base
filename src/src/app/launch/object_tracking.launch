@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <!--启动颜色跟踪节点(start color tracking node)-->
+    <node name="object_tracking" pkg="app" type="object_tracking.py" output="screen"/>
+</launch>
+

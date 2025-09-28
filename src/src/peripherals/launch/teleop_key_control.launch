@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="max_linear"      default="0.2"/>
+    <arg name="max_angular"     default="0.5"/>
+    <arg name="robot_name"      default="$(env ROBOT_HOST)"/>
+    <node name="teleop_key_control" pkg="peripherals" type="teleop_key_control.py" output="screen" ns="$(arg robot_name)">
+        <param name="max_linear"    value="$(arg max_linear)"/>
+        <param name="max_angular"   value="$(arg max_angular)"/>
+    </node>
+</launch>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<robot name="screen" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:macro name="model_color" params="link_name color_name">
+        <gazebo reference="${link_name}">
+            <material>Gazebo/${color_name}</material>
+            <turnGravityOff>false</turnGravityOff>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:model_color link_name="screen_link"  color_name="gray"/>
+</robot>

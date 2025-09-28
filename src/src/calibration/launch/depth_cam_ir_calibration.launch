@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--深度标定(depth camera calibration)-->
+<launch>
+    <!--出厂已标定，非必要务标定，标定需要自备红外补光源，然后遮住红外发射镜头即左边镜头(the camera has been calibrated before delivery,
+    so you don't need to calibrate by yourself unless necessary. For calibration, you need to prepare your own infrared fill light,
+    and then cover the infrared emitting lens, that is, the left lens.) -->
+    <arg name="depth_camera_name" default="gemini_camera" />
+
+    <!--棋盘格大小(size of the chessboard)-->
+    <arg name="size"    default="8x6" />
+    <arg name="square"  default="0.0143" />
+
+    <!--深度摄像头-->
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+        <param name="horizontal" value="true"/>
+    </node>
+
+    <!--rviz可视化(rviz visulization)-->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find calibration)/rviz/ir_calibration.rviz" />
+
+    <!--启动标定节点(start calibration node)-->
+    <node pkg="camera_calibration" type="cameracalibrator.py" name="camera_calibrator" output="screen"
+        args="
+        --size $(arg size)
+        --square $(arg square)
+        --k-coefficients=3
+        --no-service-check
+        image:=/$(arg depth_camera_name)/ir/image
+        camera:=$(arg depth_camera_name)/ir"/>
+</launch>

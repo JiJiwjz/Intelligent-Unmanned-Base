@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <node pkg="example" type="hand_trajectory_node.py" name="hand_trajectory" output="screen">
+        <param name="start"   value="true"/>
+        <param name="display" value="true"/>
+    </node>
+
+    <node pkg="example" type="hand_gesture_control_node.py" name="hand_gesture_control_node" output="screen"/>
+</launch>

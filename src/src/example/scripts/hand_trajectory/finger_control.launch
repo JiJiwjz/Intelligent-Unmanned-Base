@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--颜色追踪-->
+<launch>
+    <arg name="start"           default="true"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find kinematics)/launch/kinematics_node.launch"/>
+    <include file="$(find example)/scripts/color_detect/color_detect_node.launch"/>
+</launch>

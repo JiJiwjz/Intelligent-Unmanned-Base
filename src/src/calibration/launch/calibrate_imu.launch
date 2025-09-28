@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--IMU校准(IMU calibration)-->
+<!--
+            ——————⊗————— x
+                  |
+                  |
+                  | y
+-->
+<launch>
+    <arg name="imu_raw" default="/ros_robot_controller/imu_raw"/>
+    <arg name="imu_frame" default="imu_link"/>
+
+    <include file="$(find ros_robot_controller)/launch/ros_robot_controller_node.launch">
+        <arg name="imu_link" value="$(arg imu_frame)"/>
+    </include>
+
+    <!--imu数据标定节点(imu data calibration node)-->
+    <node name="imu_calib" pkg="imu_calib" type="do_calib" output="screen">
+        <param name="output_file" value="$(find calibration)/config/imu_calib.yaml"/>
+        <remap from="imu" to="$(arg imu_raw)"/>
+    </node>
+</launch>

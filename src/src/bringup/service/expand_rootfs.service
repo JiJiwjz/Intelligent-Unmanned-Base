@@ -1,0 +1,13 @@
+[Unit]
+Description=expand rootfs
+After=NetworkManager.service time-sync.target
+
+[Service]
+Type=simple
+KillMode=mixed
+ExecStart=/home/ubuntu/ros_ws/.expand_rootfs.sh
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <!--启动巡线行驶节点(start line following node)-->
+    <node name="line_following" pkg="app" type="line_following.py" output="screen"/>
+</launch>
+

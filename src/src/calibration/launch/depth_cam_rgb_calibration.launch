@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!--rgb摄像头标定(rgb camera calibration)-->
+<launch>
+    <!--出厂已标定，非必要务标定(calibrated before delivery, so you don't need to calibrate by yourself unless necessary.)-->
+    <arg name="depth_camera_name" default="gemini_camera" />
+
+    <!--棋盘格大小(size of the chessboard)-->
+    <arg name="size"    default="9x6" />
+    <arg name="square"  default="0.023" />
+
+    <!--深度摄像头-->
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+        <param name="horizontal" value="true"/>
+    </node>
+
+    <!--启动标定节点(start calibration node)-->
+    <node pkg="camera_calibration" type="cameracalibrator.py" name="camera_calibrator" output="screen"
+        args="
+        --size $(arg size)
+        --square $(arg square)
+        --k-coefficients=3
+        --no-service-check
+        image:=/$(arg depth_camera_name)/rgb/image_raw
+        camera:=$(arg depth_camera_name)/rgb"/>
+</launch>

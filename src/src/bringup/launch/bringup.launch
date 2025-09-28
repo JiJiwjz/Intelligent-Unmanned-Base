@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!--此launch文件被设定为自启动，自启文件路径:/etc/systemd/system/start_app_node.service 方式systemd，(this launch file is set as auto-start. The path of the auto-start file is /etc/systemd/system/start_app_node.service  method:systemd)
+关闭自启（重启后失效）：sudo systemctl stop start_app_node.service(close auto-start(invalid after reboot)：sudo systemctl stop start_app_node.service)
+开启自启（重启后失效）：sudo systemctl start start_app_node.service(enable auto-start(invalid after reboot): sudo systemctl start start_app_node.service)
+永久关闭自启（重启依旧生效）：sudo systemctl disable start_app_node.service(close auto-start permanently(still valid after reboot)：sudo systemctl disable start_app_node.service)
+永久开启自启（重启依旧生效）：sudo systemctl enable start_app_node.service(enable auto-start permanently(still valid after reboot):sudo systemctl enable start_app_node.service)
+重启自启：sudo systemctl restart start_app_node.service(restart auto-start:sudo systemctl restart start_app_node.service)
+查看自启：sudo systemctl status start_app_node.service(check auto-start: sudo systemctl status start_app_node.service)
+-->
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <!--深度摄像头(depth camera)-->
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <!--app画面传输(app image transimission)-->
+    <node name="web_video_server" pkg="web_video_server" respawn="true" respawn_delay="2"  type="web_video_server" output="screen"/>
+
+    <!--app通信(app communication)-->
+    <include file="$(find bringup)/launch/rosbridge.launch"/>
+
+    <!--app功能(app function)-->
+    <include file="$(find app)/launch/start_app.launch"/>
+
+    <!--手柄控制(handle control)-->
+    <include file="$(find peripherals)/launch/joystick_control.launch"/>
+
+    <!--开机自检(Power on self test)-->
+    <node name="startup_check" pkg="bringup" type="startup_check.py" output="screen"/>
+
+    <!--姿态(Pose)-->
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen"/>
+</launch>

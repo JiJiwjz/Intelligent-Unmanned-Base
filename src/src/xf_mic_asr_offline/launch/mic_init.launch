@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="appid"               default="23ba76cc"/>
+    <arg name="confidence"          default="18"/> <!--语音识别结果自信度阈值，取值：0-100(voice recognition result confidence ranging from 0 to 100)-->
+    <arg name="seconds_per_order"   default="15"/> <!--每次语音指令录音长度，单位：秒(recording length of each voice command in seconds)-->
+    <!-- <arg name="chinese_awake_words" default="xiao3 mai4 xiao3 mai4"/> -->
+    <arg name="chinese_awake_words" default="tang2 xiao3 tian1"/> <!--yct add:唤醒词：唐小天-->
+    <arg name="english_awake_words" default="hello robot"/>
+    <arg name="language"            default="$(env ASR_LANGUAGE)"/>
+    <arg name="enable_setting"      default="True"/><!--yct add:修改唤醒词之后，初次启动需要改为True-->
+
+    <!--设置为功能包的路径(set as the path for function package)-->
+    <arg name="package_path" default="$(find xf_mic_asr_offline)"/>
+
+    <node pkg="xf_mic_asr_offline" type="awake_node.py" name="awake_node" output="screen">
+        <param name="port"              value="/dev/ring_mic"/>
+        <param name="mic_type"          value="mic6_circle"/>
+        <param name="enable_setting"    value="$(arg enable_setting)"/>
+        <param if="$(eval language == 'Chinese')" name="awake_word"    value="$(arg chinese_awake_words)"/>
+        <param if="$(eval language == 'English')" name="awake_word"    value="$(arg english_awake_words)"/>
+    </node>
+
+    <node pkg="xf_mic_asr_offline" type="asr_node.py" name="asr_node" output="screen">
+        <param name="confidence"        value="$(arg confidence)"/>
+        <param name="seconds_per_order" value="$(arg seconds_per_order)"/>
+    </node>
+
+    <node pkg="xf_mic_asr_offline" type="voice_control" name="voice_control" output="screen">
+        <param name="appid" type="string"                               value="$(arg appid)"/>
+        <param name="confidence"                                        value="$(arg confidence)"/>
+        <param name="seconds_per_order"                                 value="$(arg seconds_per_order)"/>
+        <param name="source_path"                                       value="$(find xf_mic_asr_offline)"/>
+    </node>
+</launch>
+

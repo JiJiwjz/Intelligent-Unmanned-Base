@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--颜色识别-->
+<launch>
+    <arg name="use_astra_camea" default="false"/>
+    <arg name="enable_display"  default="false"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <node pkg="example" type="color_detect_node.py" name="color_detect" output="screen">
+        <rosparam file="$(find example)/scripts/color_detect/roi.yaml" command="load"/>
+        <param name="enable_display" value="$(arg enable_display)"/>
+        <param name="use_astra_camea" value="$(arg use_astra_camea)"/>
+    </node>
+</launch>

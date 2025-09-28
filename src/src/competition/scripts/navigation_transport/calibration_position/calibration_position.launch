@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!--自动拾取-->
+<launch>
+    <arg name="debug"               default="false"/>
+    <arg name="broadcast"           default="false"/>
+    <arg name="app"         default="false"/>
+    <arg name="sim"         default="false"/>
+    <arg name="master_name"  default="/"/>
+    <arg name="robot_name"   default="/" />
+
+
+    <rosparam file="$(find competition)/config/config.yaml"   command="load"/>
+    <!--机器人控制节点-->
+    <include file="$(find slam)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="true"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+
+    <!--对齐-->
+    <node name="position_correction" pkg="competition" type="automatic_pick.py" output="screen">
+        <param name="debug"                 value="$(arg debug)"/>
+        <param name="broadcast"             value="$(arg broadcast)"/>
+    </node>
+
+</launch>

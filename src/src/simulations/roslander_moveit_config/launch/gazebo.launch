@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="paused" default="false"/>
+    <arg name="gazebo_gui" default="true"/>
+
+    <arg name="odom_frame"  default="odom"/>
+    <arg name="base_frame"  default="base_footprint"/>
+    <arg name="lidar_frame" default="lidar_sim_frame"/>
+    <arg name="imu_frame"   default="imu_frame"/>
+    
+    <arg name="initial_x"   default="0.0"/>
+    <arg name="initial_y"   default="0.0"/>
+    <arg name="initial_z"   default="0.0"/>
+    <arg name="initial_Y"   default="0.0"/>
+
+    <!-- startup simulated world -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" default="worlds/empty.world"/>
+        <arg name="paused" value="$(arg paused)"/>
+        <arg name="gui" value="$(arg gazebo_gui)"/>
+    </include>
+
+    <!-- send robot urdf to param server -->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find roslander_description)/urdf/roslander.gazebo.xacro' odom_frame:=$(arg odom_frame) base_frame:=$(arg base_frame) lidar_frame:=$(arg lidar_frame) imu_frame:=$(arg imu_frame)"/>
+
+    <!-- push robot_description to factory and spawn robot in gazebo at the origin, change x,y,z arguments to spawn in a different position -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" args="-urdf -param robot_description -model roslander
+                -x $(arg initial_x) -y $(arg initial_y) -z $(arg initial_z) -Y $(arg initial_Y)" respawn="false" output="screen" />
+
+    <include file="$(find roslander_moveit_config)/launch/ros_controllers.launch"/>
+</launch>

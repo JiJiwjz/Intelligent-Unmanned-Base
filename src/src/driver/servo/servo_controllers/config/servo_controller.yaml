@@ -1,0 +1,96 @@
+controllers:
+  joint1_controller:
+    type: JointPositionController
+    joint_name: joint1
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 1
+      init: 500
+      min: 1000
+      max: 0
+
+  joint2_controller:
+    type: JointPositionController
+    joint_name: joint2
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 2
+      init: 500
+      min: 1000
+      max: 0
+
+  joint3_controller:
+    type: JointPositionController
+    joint_name: joint3
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 3
+      init: 500
+      min: 1000
+      max: 0
+
+  joint4_controller:
+    type: JointPositionController
+    joint_name: joint4
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 4
+      init: 500
+      min: 1000
+      max: 0
+
+  joint5_controller:
+    type: JointPositionController
+    joint_name: joint5
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 5
+      init: 500
+      min: 1000
+      max: 0
+
+  r_joint_controller:
+    type: JointPositionController
+    joint_name: r_joint
+    joint_speed: 1.0
+    port_id: 1
+    servo:
+      id: 10
+      init: 700
+      min: 1000
+      max: 0
+
+  arm_controller:
+    type: JointTrajectoryActionController
+    joint_trajectory_action_node:
+      min_velocity: 0.1
+      constraints:
+        goal_time: 0.05
+    joint_controllers:
+      - "joint1_controller"
+      - "joint2_controller"
+      - "joint3_controller"
+      - "joint4_controller"
+      - "joint5_controller"
+
+  gripper_controller:
+    type: JointTrajectoryActionController
+    joint_trajectory_action_node:
+      min_velocity: 0.1
+      constraints:
+        goal_time: 0.05
+    joint_controllers:
+      - "r_joint_controller"
+
+serial_ports:
+  - port_id: 1
+    min_motor_id: 1
+    max_motor_id: 10
+    fake_read: true
+    connected_ids: [1, 2, 3, 4, 5, 6, 10]
+    update_rate: 10

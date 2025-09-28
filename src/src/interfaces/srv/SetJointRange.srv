@@ -1,0 +1,4 @@
+interfaces/JointsRange data
+---
+bool success
+string message

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <!--启动雷达节点(start Lidar node)-->
+    <!--启动launch文件，文件路径(start launch file. Storage path for the file)-->
+    <include file="$(find peripherals)/launch/lidar.launch"/>
+
+    <!--启动雷达功能节点(start Lidar function node)-->
+    <node name="lidar_app" pkg="app" type="lidar.py" output="screen"/>
+</launch>
+

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="lidar_type"  default="$(env LIDAR_TYPE)" doc="lidar_type [S2L, G4]"/>
+    <arg name="scan_topic"  default="scan"/>
+    <arg name="lidar_frame" default="lidar_frame"/>
+
+    <!--    S2L
+        -180 180
+     -90         90
+            0
+    -->
+    <include if="$(eval lidar_type == 'S2L')" file="$(find peripherals)/launch/include/rplidar_s2.launch">
+        <arg name="scanner_name"    value="$(arg scan_topic)" />
+        <arg name="laser_frame"     value="$(arg lidar_frame)" />
+    </include>
+
+    <!--    G4
+            0
+      90        -90
+        180 -180
+    -->
+    <include if="$(eval lidar_type == 'G4')" file="$(find peripherals)/launch/include/ydlidar.launch">
+        <arg name="scan_topic" value="$(arg scan_topic)" />
+        <arg name="frame_id"   value="$(arg lidar_frame)" />
+    </include>
+</launch>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="roslander" xmlns:xacro="http://ros.org/wiki/xacro">
+    <xacro:include filename="$(find roslander_description)/urdf/roslander.urdf.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/car.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/screen.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/depth_camera.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/lidar.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/imu.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/arm.transmission.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/arm.gazebo.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/gripper.transmission.xacro"/>
+    <xacro:include filename="$(find roslander_description)/urdf/gazebo/gripper.gazebo.xacro"/>
+</robot>

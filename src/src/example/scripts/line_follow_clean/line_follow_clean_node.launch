@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--巡线清障-->
+<launch>
+    <arg name="debug"   default="false"/>
+    <include file="$(find peripherals)/launch/lidar.launch"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find example)/scripts/color_detect/color_detect_node.launch"/>
+
+    <node pkg="example" type="line_follow_clean_node.py" name="line_follow_clean" output="screen">
+        <param name="debug" value="$(arg debug)"/>
+        <rosparam file="$(find example)/config/line_follow_clean_roi.yaml"   command="load"/>
+    </node>
+</launch>

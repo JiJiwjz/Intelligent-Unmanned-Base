@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!--手部跟踪-->
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find kinematics)/launch/kinematics_node.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <node pkg="example" type="hand_detect_node.py" name="hand_detect" output="screen"/>
+    <node pkg="example" type="hand_track_node.py" name="hand_track" output="screen"/>
+</launch>

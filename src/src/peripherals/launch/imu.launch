@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="freq"              default="50"/>
+    <arg name="imu_raw_topic"     default="/ros_robot_controller/imu_raw"/>
+    <arg name="imu_topic"         default="imu"/>
+    <arg name="imu_link"          default="imu_link"/>
+    <arg name="imu_frame"         default="imu_frame"/>
+    <arg name="debug"             default="false"/>
+
+    <group if="$(arg debug)">
+        <param name="robot_description" command="$(find xacro)/xacro '$(find roslander_description)/urdf/roslander.urdf.xacro'" />
+
+        <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+        <node name="tf_broadcaster_imu" pkg="mpu_6050_driver" type="tf_broadcaster_imu.py" output="screen">
+            <param name="imu_topic" value="$(arg imu_topic)"/>
+            <param name="imu_frame" value="$(arg imu_frame)"/>
+            <param name="imu_link"  value="$(arg imu_link)"/>
+        </node>
+    </group>
+
+    <!--ROS Robot Controller板节点-->
+    <include file="$(find ros_robot_controller)/launch/ros_robot_controller_node.launch">
+        <arg name="freq"    value="$(arg freq)"/>
+        <arg name="imu_link" value="$(arg imu_link)"/>
+    </include>
+
+    <!--imu过滤-->
+    <include file="$(find peripherals)/launch/imu_base.launch">
+        <arg name="imu_raw_topic" value="$(arg imu_raw_topic)"/>
+        <arg name="imu_topic"     value="$(arg imu_topic)"/>
+    </include>
+    <node if="$(arg debug)" name="rviz" pkg="rviz" type="rviz" args="-d $(find peripherals)/rviz/imu_view.rviz"/>
+</launch>

@@ -1,0 +1,15 @@
+# 全局代价地图(global cost map)
+global_costmap:
+  global_frame: map
+  robot_base_frame: base_footprint
+  update_frequency: 1.0
+  publish_frequency: 1.0
+  transform_tolerance: 1
+  plugins:
+    - {name: static_layer,    type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer,  type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+  inflation_layer:
+    enabled: true
+    inflation_radius: 0.25 # footprint(或者robot_radius)与 inflation_radius 共同决定全局路径规划，其中footprint决定路径绝对不可以靠近的障碍物范围，inflation_radius决定路径不建议进入的障碍物范围。所以 inflation_radiu必须大于小车外形外接半径
+    cost_scaling_factor: 10.0 # 代价比例系数，越大则代价值越小, cost_scaling_factor越大占用的计算量越小(cost ratio factor. The greater it is, the less the cost is)

@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<!--yct add:这是比赛启动的launch文件，启动后就会等待麦克风，然后开始执行比赛过程-->
+<!--自动拾取-->
+<launch>
+    <arg name="debug"               default="false"/>
+    <arg name="broadcast"           default="false"/>
+    <arg name="target_color" default="red" />
+    <arg name="map"         default="explore"/>
+    <arg name="app"         default="false"/>
+    <arg name="sim"         default="false"/>
+    <arg name="master_name"  default="/"/>
+    <arg name="robot_name"   default="/"/>
+    <arg name="frame_prefix"  default="/"/>
+    <arg name="drive_type"  default="diff-corrected"/>
+
+    <arg name="map_frame"    default="map"/>
+
+    <!--自定义深度摄像头名称(custom depth camera name)-->
+    <arg name="depth_camera_name"   default="depth_cam"/>
+
+    <!--自定义深度摄像头rgb话题名称(custom depth camera rgb topic name)-->
+    <arg name="image_topic"         default="image_raw"/>
+
+    <rosparam file="$(find competition)/config/config.yaml" command="load"/>
+    <!--麦克风节点-->
+    <include file="$(find competition)/launch/mic_init.launch"/>
+
+    <!--读取地图节点-->
+    <include file="$(find competition)/launch/include/load_map.launch">
+        <arg name="map"         value="$(arg map)"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+    </include>
+
+    <!--机器人控制节点-->
+    <include file="$(find competition)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="false"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+
+    <!--YOLO5-->
+    <rosparam param="/classes">['cube','box','cylinder']</rosparam>
+    <node pkg="competition" type="yolov5_node.py" name="yolov5" output="screen">
+        <param name="engine"        value="shape_models.engine"/>
+        <param name="lib"           value="shape_models_libmyplugins.so"/>
+        <param name="conf_thresh"   value="0.6"/>
+    </node>
+
+    <!--运动学节点(chassis driver)-->
+    <include file="$(find competition)/launch/kinematics_node.launch">
+    </include>
+
+    <!--启动导航-->
+    <include file="$(find competition)/launch/include/navigation_base.launch">
+        <arg name="drive_type"  value="$(arg drive_type)"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+    <!--对齐-->
+    <node name="position_correction" pkg="competition" type="automatic_pick.py" output="screen">
+        <param name="debug"                 value="$(arg debug)"/>
+        <param name="broadcast"             value="$(arg broadcast)"/>
+    </node>
+    <!--上坡-->
+    <node name="ramp" pkg="competition" type="ramp.py" output="screen">
+        <param name="debug"                 value="$(arg debug)"/>
+        <param name="broadcast"             value="$(arg broadcast)"/>
+    </node>
+    <!--形状识别-->
+    <node name="shape_recognition" pkg="competition" type="shape_recognition_down.py" output="screen" respawn="true">
+    </node>
+    <!--总控制-->
+    <node name="voice_control_navigation" pkg="competition" type="voice_control_navigation.py" output="screen" ns='$(arg master_name)'>
+        <param name="map_frame" value="$(arg map_frame)"/>
+    </node>
+
+    <include file="$(find competition)/launch/rviz_navigation.launch"/>
+</launch>

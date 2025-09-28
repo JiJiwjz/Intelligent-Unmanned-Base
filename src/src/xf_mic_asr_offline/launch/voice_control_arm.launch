@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+
+    <node pkg="xf_mic_asr_offline" type="voice_control_arm.py" name="voice_control_arm_node" output="screen"/>
+</launch>

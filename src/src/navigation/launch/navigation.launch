@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="map"         default=""/>
+    <arg name="app"         default="false"/>
+    <arg name="sim"         default="false"/>
+    <arg name="drive_type"  default="diff-corrected"/>
+    <arg     if="$(arg app)" name="robot_name"  default="/"/>
+    <arg unless="$(arg app)" name="robot_name"  default="$(env ROBOT_HOST)"/>
+    <arg     if="$(arg app)" name="master_name" default="/"/>
+    <arg unless="$(arg app)" name="master_name" default="$(env ROBOT_MASTER)"/>
+
+    <include file="$(find navigation)/launch/include/load_map.launch">
+        <arg name="map"         value="$(arg map)"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+    </include>
+
+    <include file="$(find slam)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="true"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+
+    <include file="$(find navigation)/launch/include/navigation_base.launch">
+        <arg name="drive_type"  value="$(arg drive_type)"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+</launch>

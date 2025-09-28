@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="start"   default="true"/>
+    <arg name="color"   default="blue"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <include file="$(find kinematics)/launch/kinematics_node.launch"/>
+    <node pkg="example" type="track_and_grab.py" name="track_and_grab" output="screen">
+        <param name="start" value="$(arg start)"/>
+        <param name="color" value="$(arg color)"/>
+    </node>
+</launch>

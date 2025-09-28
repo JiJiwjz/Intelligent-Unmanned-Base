@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=SLAM
+Comment=SLAM Program
+Encoding=UTF-8
+Exec=bash /home/ubuntu/ros_ws/src/bringup/scripts/slam.sh
+Terminal=false
+MultipleArgs=false
+Type=Application
+Categories=Application;Development;
+StartupNotify=true

@@ -1,0 +1,4 @@
+<launch>
+  <include file="$(find ldlidar)/launch/ld08.launch" />
+  <node name="rviz_show_ldlidar_ld08" pkg="rviz" type="rviz" args="-d $(find ldlidar)/rviz/ldlidar_noetic.rviz" required="true"/>
+</launch>

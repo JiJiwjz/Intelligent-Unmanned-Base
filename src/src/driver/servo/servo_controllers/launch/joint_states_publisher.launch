@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="base_frame"  default="base_link"/>
+    <node name="joint_states_publisher" pkg="servo_controllers" type="joint_state_publisher.py" output="screen">
+        <param name="base_frame"    value="$(arg base_frame)"/>
+        <param name="machine_type"  value="$(env MACHINE_TYPE)"/>
+    </node>
+</launch>

@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<launch>
+    <!--机器命名空间-->
+    <arg name="master_name"  default="$(env ROBOT_MASTER)"/>
+    <arg name="robot_name"   default="$(env ROBOT_HOST)" />
+    <arg name="lidar"        default="$(env LIDAR_TYPE)"/>
+    <arg name="horizontal"   default="false"/>
+
+    <!--是否使用仿真-->
+    <arg name="sim"                 default="false"/>
+    <arg name="app"                 default="false"/>
+    <arg name="use_joy"             default="true"/>
+
+    <arg name="set_pose"            default="true"/>
+
+    <arg name="enable_odom"         default="true"/>
+
+    <!--是否使用深度相机模拟雷达-->
+    <arg name="use_depth_camera"    default="false" />
+
+    <!--手柄控制速度限制-->
+    <arg     if="$(arg sim)" name="max_linear"  default="0.7"/>
+    <arg unless="$(arg sim)" name="max_linear"  default="0.2"/>
+    <arg     if="$(arg sim)" name="max_angular" default="3.5"/>
+    <arg unless="$(arg sim)" name="max_angular" default="0.5"/>
+
+    <!--topic和frame设置-->
+    <arg      if="$(eval robot_name == '/')"    name="topic_prefix" default=""/>
+    <arg unless="$(eval robot_name == '/')"     name="topic_prefix" default="/$(arg robot_name)"/>
+    <arg      if="$(eval robot_name == '/')"    name="frame_prefix" default=""/>
+    <arg unless="$(eval robot_name == '/')"     name="frame_prefix" default="$(arg robot_name)/"/>
+    <arg      if="$(eval robot_name == '/')"    name="tf_prefix"    default=""/>
+    <arg unless="$(eval robot_name == '/')"     name="tf_prefix"    default="$(arg robot_name)"/>
+
+    <arg name="cmd_vel_topic"       default="$(arg topic_prefix)/controller/cmd_vel"/>
+    <arg name="scan_raw"            default="$(arg topic_prefix)/scan_raw"/>
+    <arg name="depth_camera_name"   default="depth_cam"/>
+    <arg name="depth_camera_frame"  default="$(arg frame_prefix)$(arg depth_camera_name)_frame"/>
+    <arg name="scan_topic"          default="$(arg topic_prefix)/scan"/>
+    <arg name="odom_raw_topic"      default="$(arg topic_prefix)/odom_raw"/>
+    <arg name="odom_lidar_topic"    default="$(arg topic_prefix)/odom_lidar"/>
+    <arg name="odom_topic"          default="$(arg topic_prefix)/odom"/>
+    <arg name="imu_raw_topic"       default="$(arg topic_prefix)/ros_robot_controller/imu_raw"/>
+    <arg name="imu_topic"           default="$(arg topic_prefix)/imu"/>
+
+    <arg     if="$(eval robot_name == master_name)" name="map_frame" default="$(arg frame_prefix)map"/>
+    <arg unless="$(eval robot_name == master_name)" name="map_frame" default="$(arg master_name)/map"/>
+    <arg name="odom_frame"          default="$(arg frame_prefix)odom"/>
+    <arg name="base_frame"          default="$(arg frame_prefix)base_footprint"/>
+    <arg name="lidar_frame"         default="$(arg frame_prefix)lidar_frame"/>
+    <arg name="imu_link"            default="$(arg frame_prefix)imu_link"/>
+
+    <group ns="$(arg robot_name)">
+        <!--是否使用仿真-->
+        <group unless="$(arg sim)">
+            <!--深度相机开启-->
+            <include file="$(find peripherals)/launch/depth_cam.launch">
+                <arg name="app"                 value="$(arg app)"/>
+                <arg name="tf_prefix"           value="$(arg frame_prefix)" />
+            </include>
+
+            <!--雷达开启-->
+            <include unless="$(arg use_depth_camera)" file="$(find peripherals)/launch/lidar.launch">
+                <arg name="scan_topic"  value="$(arg scan_raw)" />
+                <arg name="lidar_frame" value="$(arg lidar_frame)" />
+            </include>
+
+            <!--底盘驱动odom发布-->
+            <include file="$(find controller)/launch/controller.launch" >
+                <arg name="enable_odom"      value="$(arg enable_odom)"/>
+                <arg name="odom_topic"       value="$(arg odom_topic)" />
+                <arg name="odom_raw_topic"   value="$(arg odom_raw_topic)" />
+                <arg name="odom_lidar_topic" value="$(arg odom_lidar_topic)" />
+                <arg name="scan_topic"       value="$(arg scan_raw)" />
+                <arg name="base_frame"       value="$(arg base_frame)" />
+                <arg name="odom_frame"       value="$(arg odom_frame)" />
+                <arg name="map_frame"        value="$(arg map_frame)"/>
+                <arg name="cmd_vel"          value="$(arg cmd_vel_topic)" />
+                <arg name="imu_raw_topic"    value="$(arg imu_raw_topic)" />
+                <arg name="imu_topic"        value="$(arg imu_topic)" />
+                <arg name="imu_link"         value="$(arg imu_link)" />
+                <arg name="tf_prefix"        value="$(arg tf_prefix)" />
+            </include>
+        </group>
+
+        <group if="$(arg use_depth_camera)">
+            <!--深度相机模拟雷达-->
+            <include file="$(find slam)/launch/include/depthimage_to_laserscan.launch">
+                <arg name="depth_topic"         value="$(arg topic_prefix)/$(arg depth_camera_name)/depth/image_raw" />
+                <arg name="camera_info_topic"   value="$(arg topic_prefix)/$(arg depth_camera_name)/depth/camera_info" />
+                <arg name="output_frame_id"     value="$(arg topic_prefix)/$(arg depth_camera_name)_link" />
+            </include>
+        </group>
+
+        <group unless="$(arg use_depth_camera)">
+            <!--雷达过滤-->
+            <node unless="$(arg sim)" pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+                                <rosparam if="$(eval lidar != 'G4')" ns="scan_filter_chain" subst_value="true">
+                                  - name: angle
+                                    type: laser_filters/LaserScanAngularBoundsFilterInPlace
+                                    params:
+                                            lower_angle: -1.6
+                                            upper_angle: 1.6
+                                </rosparam>
+                                <rosparam if="$(eval lidar == 'G4')" ns="scan_filter_chain" subst_value="true">
+                                  - name: angle
+                                    type: laser_filters/LaserScanAngularBoundsFilter
+                                    params:
+                                            lower_angle: -1.6
+                                            upper_angle: 1.6
+                                </rosparam>
+                <remap from="scan" to="$(arg scan_raw)" />
+                <remap from="scan_filtered" to="$(arg scan_topic)" />
+            </node>
+            <node if="$(arg sim)" pkg="laser_filters" type="scan_to_scan_filter_chain" output="screen" name="laser_filter">
+                                <rosparam ns="scan_filter_chain" subst_value="true">
+                                  - name: angle
+                                    type: laser_filters/LaserScanAngularBoundsFilterInPlace
+                                    params:
+                                            lower_angle: 1.54
+                                            upper_angle: 4.71
+                                </rosparam>
+                <remap from="scan" to="$(arg scan_raw)" />
+                <remap from="scan_filtered" to="$(arg scan_topic)" />
+            </node>
+        </group>
+
+        <!--ROS Robot Controller板节点-->
+        <include if="$(eval use_joy and sim)" file="$(find ros_robot_controller)/launch/ros_robot_controller_node.launch">
+            <arg name="imu_link" value="$(arg imu_link)"/>
+        </include>
+
+        <!--手柄控制-->
+        <include if="$(arg use_joy)" file="$(find peripherals)/launch/joystick_control.launch" >
+            <arg name="max_linear"  value="$(arg max_linear)"/>
+            <arg name="max_angular" value="$(arg max_angular)"/>
+            <arg name="cmd_vel"     value="$(arg cmd_vel_topic)"/>
+        </include>
+
+        <!--机械臂姿态-->
+        <node if="$(eval set_pose and not sim)" name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+            <param name="horizontal"  value="$(arg horizontal)"/>
+        </node>
+    </group>
+</launch>

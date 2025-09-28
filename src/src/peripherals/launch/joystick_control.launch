@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="max_linear"      default="0.5"/>
+    <arg name="max_angular"     default="2"/>
+    <arg name="cmd_vel"         default="controller/cmd_vel"/>
+    <arg name="remap_cmd_vel"   default="$(arg cmd_vel)"/>
+
+    <node name="joystick_control" pkg="peripherals" type="joystick_control.py" output="screen">
+        <param name="machine"               value="$(env MACHINE_TYPE)"/>
+        <param name="max_linear"            value="$(arg max_linear)"/>
+        <param name="max_angular"           value="$(arg max_angular)"/>
+        <param name="cmd_vel"               value="$(arg cmd_vel)"/>
+        <param name="disable_servo_control" value="true"/>
+        <remap from="$(arg cmd_vel)"        to="$(arg remap_cmd_vel)"/>
+    </node>
+</launch>

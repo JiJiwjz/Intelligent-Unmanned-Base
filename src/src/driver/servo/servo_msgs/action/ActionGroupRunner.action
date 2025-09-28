@@ -1,0 +1,8 @@
+string name
+uint32 repeat
+---
+string name
+string result
+---
+string name
+uint32 step

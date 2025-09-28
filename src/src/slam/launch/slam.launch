@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="sim"         default="false"/>
+    <arg name="app"         default="false"/>
+    <arg name="use_joy"     default="true"/>
+    <arg     if="$(arg app)" name="robot_name"  default="/"/>
+    <arg unless="$(arg app)" name="robot_name"  default="$(env ROBOT_HOST)"/>
+    <arg     if="$(arg app)" name="master_name" default="/"/>
+    <arg unless="$(arg app)" name="master_name" default="$(env ROBOT_MASTER)"/>
+
+    <!--建图方法选择-->
+    <arg name="slam_methods" default="gmapping" doc="slam type 
+        [gmapping, cartographer, hector, karto, frontier, explore, rrt_exploration, rtabmap]"/>
+
+    <arg name="gmapping"        default="gmapping"/>
+    <arg name="cartographer"    default="cartographer"/>
+    <arg name="hector"          default="hector"/>
+    <arg name="karto"           default="karto"/>
+    <arg name="frontier"        default="frontier"/>
+    <arg name="explore"         default="explore"/>
+    <arg name="rrt_exploration" default="rrt_exploration"/>
+    <arg name="rtabmap"         default="rtabmap"/>
+
+    <include file="$(find slam)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="$(arg use_joy)"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+        <arg if="$(eval slam_methods == hector)" name="enable_odom" value="false"/>
+    </include>
+
+    <include file="$(find slam)/launch/include/slam_base.launch">
+        <arg name="sim"             value="$(arg sim)"/>
+        <arg name="slam_methods"    value="$(arg slam_methods)"/>
+        <arg name="robot_name"      value="$(arg robot_name)"/>
+    </include>
+</launch>

@@ -1,0 +1,16 @@
+<library path="lib/librviz_plugin">
+  <class name="rviz_plugin/NavigationButton"
+         type="rviz_navigation::NavigationButton"
+         base_class_type="rviz::Panel">
+    <description>
+      A Button to call a navigation service.
+    </description>
+</class>
+  <class name="rviz_plugin/MapSaveButton"
+         type="rviz_map_save::MapSaveButton"
+         base_class_type="rviz::Panel">
+    <description>
+      A Button to call map save service.
+    </description>
+  </class>
+</library>

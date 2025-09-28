@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="start"       default="true"/>
+    <arg name="category"    default="shape"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <include file="$(find kinematics)/launch/kinematics_node.launch"/>
+    <node pkg="example" type="object_classification.py" name="object_classification" output="screen">
+        <param name="start" value="$(arg start)"/>
+        <param name="category" value="$(arg category)"/>
+    </node>
+</launch>

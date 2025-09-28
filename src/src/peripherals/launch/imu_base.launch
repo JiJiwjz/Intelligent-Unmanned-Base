@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- yct add:这个包用来校准imu，其输出的速度很正确！ -->
+    <arg name="imu_raw_topic"       default="/ros_robot_controller/imu_raw"/>
+    <arg name="imu_topic"           default="imu_data"/>
+
+    <node name="imu_calib" pkg="imu_calib" type="apply_calib" output="screen" >
+        <param name="calib_file" value="$(find calibration)/config/imu_calib.yaml" />
+        <remap from="raw"        to="$(arg imu_raw_topic)" />
+        <remap from="corrected"  to="imu_corrected"/>
+    </node>
+
+    <!-- yct add:这个包用来生成位姿四元数，其输出的速度不对劲，需要做修改，参考：https://wiki.ros.org/imu_complementary_filter -->
+    <!-- 最终效果应当是使其输出速度与imu_corrected一致，也就是不做修改，不画蛇添足 -->
+    <!-- yct add:最终去除了所有的互补滤波器和偏差估计，使得速度和imu_corrected一致，根据速度算出位姿，使其可以用于ekf localization -->
+    <node name="imu_filter" pkg="imu_complementary_filter" type="complementary_filter_node" >
+        <param name="use_mag"              value="false"/>
+        <param name="do_bias_estimation"   value="false"/>
+        <!-- <param name="gain_acc"             value="0.2"/>
+        <param name="bias_alpha"           value="0.2"/> -->
+        <param name="do_adaptive_gain"     value="false"/>
+        <param name="publish_debug_topics" value="false"/>
+        <remap from="imu/data_raw"         to="imu_corrected"/>
+        <remap from="imu/data"             to="$(arg imu_topic)"/>
+    </node>
+
+    <!--<node name="imu_filter" pkg="imu_filter_madgwick" type="imu_filter_node" >-->
+      <!--<param name="use_mag" value="false"/>-->
+      <!--<param name="world_frame" value="enu"/>-->
+      <!--<param name="publish_tf" value="false"/>-->
+      <!--<param name="imu_msg_type" value="sensor_msgs/Imu"/>-->
+      <!--<remap from="imu/data_raw" to="imu_corrected"/>-->
+      <!--<remap from="imu/data" to="$(arg imu_topic)"/>-->
+    <!--</node>-->
+</launch>

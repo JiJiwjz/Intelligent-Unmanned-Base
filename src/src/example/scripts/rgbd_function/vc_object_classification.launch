@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find example)/scripts/rgbd_function/object_classification.launch">
+        <arg name="start" value="false"/>
+    </include>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+    <node pkg="example" type="vc_object_classification.py" name="vc_object_classification" output="screen"/>
+</launch>

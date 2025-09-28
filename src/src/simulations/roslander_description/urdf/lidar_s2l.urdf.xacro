@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="lidar_s2l" xmlns:xacro="http://ros.org/wiki/xacro" >
+  <link name="lidar_frame" />
+  <joint
+    name="lidar_frame_joint"
+    type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="lidar_link" />
+    <child link="lidar_frame" />
+  </joint>
+</robot>

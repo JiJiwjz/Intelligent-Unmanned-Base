@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<robot name="arm" xmlns:xacro="http://ros.org/wiki/xacro">
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so" />
+    </gazebo>
+
+    <gazebo>
+        <plugin name="gazebo_controller" filename="libgazebo_ros_planar_move.so">
+            <commandTopic>controller/cmd_vel</commandTopic>
+            <odometryTopic>odom</odometryTopic>
+            <odometryFrame>$(arg odom_frame)</odometryFrame>
+            <odometryRate>20.0</odometryRate>
+            <robotBaseFrame>$(arg base_frame)</robotBaseFrame>
+        </plugin>
+    </gazebo>
+
+    <xacro:macro name="model_color" params="link_name color_name">
+        <gazebo reference="${link_name}">
+            <material>Gazebo/${color_name}</material>
+            <turnGravityOff>false</turnGravityOff>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:model_color link_name="base_link"            color_name="gray"/>
+    <xacro:model_color link_name="body_link"            color_name="gray"/>
+    <xacro:model_color link_name="lidar_link"           color_name="black"/>
+
+    <xacro:model_color link_name="wheel_front_right_link"   color_name="gray"/>
+    <xacro:model_color link_name="wheel_front_left_link"    color_name="gray"/>
+    <xacro:model_color link_name="wheel_rear_right_link"    color_name="gray"/>
+    <xacro:model_color link_name="wheel_rear_left_link"     color_name="gray"/>
+
+    <!-- Transmission macro -->
+    <xacro:macro name="SimpleTransmissionPosition" params="joint">
+        <transmission name="tran_${joint}">
+            <type>transmission_interface/SimpleTransmission</type>
+            <joint name="${joint}">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+            </joint>
+            <actuator name="${joint}_motor">
+                <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+                <mechanicalReduction>1</mechanicalReduction>
+            </actuator>
+        </transmission>
+    </xacro:macro>
+
+    <xacro:SimpleTransmissionPosition joint="joint1" />
+</robot>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!--启动app节点(start app node)-->
+    <include file="$(find app)/launch/lidar_app.launch"/>
+    <include file="$(find app)/launch/line_following.launch"/>
+    <include file="$(find app)/launch/object_tracking.launch"/>
+    <include file="$(find app)/launch/ar_app.launch"/>
+    <!--<include file="$(find app)/launch/hand_gesture.launch"/>-->
+</launch>

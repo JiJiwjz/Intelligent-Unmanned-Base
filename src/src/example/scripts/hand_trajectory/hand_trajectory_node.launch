@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!--指尖轨迹-->
+<launch>
+    <arg name="start"     default="true"/>
+    <arg name="display"   default="true"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+        <param name="horizontal" value="true"/>
+    </node>
+
+    <node pkg="example" type="hand_trajectory_node.py" name="hand_trajectory" output="screen">
+        <param name="start"   value="$(arg start)"/>
+        <param name="display" value="$(arg display)"/>
+    </node>
+</launch>

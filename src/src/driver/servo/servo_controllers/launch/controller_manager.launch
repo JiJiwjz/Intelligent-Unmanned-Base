@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="servo_manager" pkg="servo_controllers" type="controller_manager.py" required="true" output="screen">
+        <rosparam file="$(find servo_controllers)/config/servo_controller.yaml" command="load"/>
+    </node>
+</launch>

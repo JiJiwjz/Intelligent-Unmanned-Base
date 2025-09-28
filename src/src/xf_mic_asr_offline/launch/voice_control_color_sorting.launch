@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+
+    <include file="$(find example)/scripts/color_sorting/color_sorting_node.launch">
+        <arg name="start"   value="false"/>
+    </include>
+
+    <node pkg="xf_mic_asr_offline" type="voice_control_color_sorting.py" name="voice_control_color_sorting_node" output="screen"/>
+</launch>

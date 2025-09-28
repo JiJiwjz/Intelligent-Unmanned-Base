@@ -1,0 +1,5 @@
+# 偏差调整，单位m，x+表示在x大于0的时候加上这个偏差值
+x+_offset: 0.00
+x-_offset: 0.00
+y+_offset: 0.00
+y-_offset: 0.00

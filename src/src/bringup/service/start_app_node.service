@@ -1,0 +1,16 @@
+[Unit]
+Description=start node
+After=NetworkManager.service time-sync.target
+
+[Service]
+Type=simple
+User=ubuntu
+Restart=always
+RestartSec=30
+KillMode=mixed
+ExecStart=/home/ubuntu/ros_ws/src/bringup/scripts/source_env.bash roslaunch bringup bringup.launch
+StandardOutput=null
+StandardError=null
+
+[Install]
+WantedBy=multi-user.target

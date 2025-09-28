@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch">
+        <arg name="enable_setting"  value="True"/>
+    </include>
+    <node pkg="xf_mic_asr_offline" type="voice_control_move.py" name="voice_control_move_node" output="screen">
+        <param name="delay"  value="30"/>
+    </node>
+</launch>

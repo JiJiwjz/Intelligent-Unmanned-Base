@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<opencv_storage>
+<my_object>
+  <pointsInGrid>20</pointsInGrid>
+  <winSize>
+    3 3</winSize>
+  <maxLevel>5</maxLevel>
+  <termCriteria_maxCount>20</termCriteria_maxCount>
+  <termCriteria_epsilon>0.3</termCriteria_epsilon>
+  <winSizeNCC>
+    30 30</winSizeNCC>
+  <maxMedianLengthOfDisplacementDifference>10.</maxMedianLengthOfDisplacementDifference></my_object>
+</opencv_storage>

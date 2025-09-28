@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Navigation
+Comment=Navigation Program
+Encoding=UTF-8
+Exec=zsh /home/ubuntu/ros_ws/src/bringup/scripts/navigation.sh
+Terminal=true
+MultipleArgs=false
+Type=Application
+Categories=Application;Development;
+StartupNotify=true

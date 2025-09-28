@@ -1,0 +1,10 @@
+float64[] position
+float64 pitch
+float64[] pitch_range 
+float64 resolution
+---
+bool success
+float64[] pulse
+uint16[] current_pulse
+float64[] rpy
+float64 min_variation

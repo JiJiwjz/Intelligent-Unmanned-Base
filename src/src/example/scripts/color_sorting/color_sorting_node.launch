@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!--颜色分拣-->
+<launch>
+    <arg name="start"   default="true"/>
+    <arg name="debug"   default="false"/>
+    <include file="$(find example)/scripts/color_detect/color_detect_node.launch"/>
+    <include file="$(find controller)/launch/controller.launch"/>
+    <node pkg="example" type="color_sorting_node.py" name="color_sorting" output="screen">
+        <rosparam file="$(find example)/config/color_sorting_roi.yaml"   command="load"/>
+        <param name="start" value="$(arg start)"/>
+        <param name="debug" value="$(arg debug)"/>
+    </node>
+</launch>

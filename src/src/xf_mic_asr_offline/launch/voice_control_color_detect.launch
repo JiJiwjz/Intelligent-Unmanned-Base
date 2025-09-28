@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+        <param name="horizontal" value="true"/>
+    </node>
+
+    <include file="$(find example)/scripts/color_detect/color_detect_node.launch"/>
+    <node pkg="xf_mic_asr_offline" type="voice_control_color_detect.py" name="voice_control_color_detect_node" output="screen"/>
+</launch>

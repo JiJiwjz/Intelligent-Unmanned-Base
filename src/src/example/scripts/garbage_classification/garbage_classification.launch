@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--垃圾分类-->
+<launch>
+    <arg name="debug"           default="false"/>
+    <arg name="start"           default="true"/>
+    <arg name="broadcast"       default="false"/>
+
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <arg name="node_name" default="yolov5" />
+    <rosparam param="/$(arg node_name)/classes">['BananaPeel','BrokenBones','CigaretteEnd','DisposableChopsticks','Ketchup','Marker','OralLiquidBottle','Plate','PlasticBottle','StorageBattery','Toothbrush', 'Umbrella']</rosparam>
+    <node pkg="example" type="yolov5_node.py" name="$(arg node_name)" output="screen">
+        <param name="engine"        value="garbage_classification_320s_6_2.engine"/>
+        <param name="lib"           value="libmyplugins_320.so"/>
+        <param name="conf_thresh"   value="0.8"/>
+    </node>
+
+    <node pkg="example" type="garbage_classification.py" name="garbage_classification" output="screen">
+        <param name="start"     value="$(arg start)"/>
+        <param name="debug"     value="$(arg debug)"/>
+        <param name="broadcast" value="$(arg broadcast)"/>
+        <rosparam file="$(find example)/config/garbage_classification_roi.yaml"   command="load"/>
+    </node>
+</launch>

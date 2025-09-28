@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+
+    <include file="$(find example)/scripts/garbage_classification/garbage_classification.launch">
+        <arg name="start"       value="false"/>
+        <arg name="broadcast"   value="true"/>
+    </include>
+
+    <node pkg="xf_mic_asr_offline" type="voice_control_garbage_classification.py" name="voice_control_garbage_classification_node" output="screen"/>
+</launch>

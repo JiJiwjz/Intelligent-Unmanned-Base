@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--角速度校准-->
+<launch>
+    <arg name="angular"         default="true"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <!--角速度校准(angular velocity calibration)-->
+    <node name="calibrate_angular" pkg="calibration" type="calibrate_angular.py" output="screen"/>
+
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen"/>
+
+    <!--rqt-->
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="calibrate_rqt_reconfigure"/>
+
+    <!--参数重赋值(reassign the parameter)-->
+    <param if="$(arg angular)" name="/odom_publisher/angular_correction_factor" value="1.0"/>
+</launch>

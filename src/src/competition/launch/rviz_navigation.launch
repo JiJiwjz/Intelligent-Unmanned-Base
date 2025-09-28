@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<launch>
+    <!--是否使用仿真-->
+    <arg name="sim"         default="false" />
+    <arg name="robot_name"  default="/"/>
+
+    <group if="$(eval robot_name != '/')">
+        <node     if="$(arg sim)" pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find navigation)/rviz/navigation_sim.rviz"/>
+        <node unless="$(arg sim)" pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find navigation)/rviz/navigation.rviz"/>
+    </group>
+    <group if="$(eval robot_name == '/')">
+        <node     if="$(arg sim)" pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find navigation)/rviz/without_namespace/navigation_sim.rviz"/>
+        <node unless="$(arg sim)" pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find navigation)/rviz/without_namespace/navigation.rviz"/>
+    </group>
+</launch>

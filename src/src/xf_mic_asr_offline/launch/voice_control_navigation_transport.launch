@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+    <!--
+        pick(1.5, 0.5)  place(1.0, 1.0)
+            |               |
+            |               |
+    map——————————————————————
+    -->
+    <arg name="map"                 default=""/>
+    <arg name="place_without_color" default="true"/>
+    <arg name="broadcast"           default="true"/>
+    <arg name="pick_position"       default="[1.5, 0.5, 0, 0, 0]"/> <!--x, y, roll, pitch, yaw-->
+    <arg name="place_position"      default="[1.0, 1.0, 0, 0, 0]"/> <!--x, y, roll, pitch, yaw-->
+
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+
+    <include file="$(find example)/scripts/navigation_transport/navigation_transport.launch">
+        <arg name="map"                 value="$(arg map)"/>
+        <arg name="place_without_color" value="$(arg place_without_color)"/>
+        <arg name="broadcast"           value="$(arg broadcast)"/>
+    </include>
+
+    <node pkg="xf_mic_asr_offline" type="voice_control_navigation_transport.py" name="voice_control_navigation_transport_node" output="screen">
+        <rosparam param="pick_position"  subst_value="True">$(arg pick_position)</rosparam>
+    </node>
+</launch>

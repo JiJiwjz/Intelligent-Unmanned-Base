@@ -1,0 +1,4 @@
+<launch>
+    <!--运动学节点-->
+    <node name="kinematics" pkg="competition" type="search_kinematics_solutions_node.py" required="true" output="screen"/>
+</launch>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<launch>
+    <arg name="app"         default="false"/>
+    <arg name="sim"         default="false"/>
+    <arg name="master_name"  default="/"/>
+    <arg name="robot_name"   default="/" />
+    <arg name="frame_prefix"  default="/"/>
+    <!--<arg name="node_name" default="yolov5" />-->
+
+    <rosparam param="/classes">['cube','box','cylinder']</rosparam>
+    <!--<rosparam file="$(find competition)/config/config.yaml"   command="load"/>-->
+
+    <!--机器人控制节点-->
+    <include file="$(find slam)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="true"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+
+    <!--YOLO5-->
+    <node pkg="competition" type="yolov5_node.py" name="yolov5" output="screen">
+        <param name="engine"        value="shape_models.engine"/>
+        <param name="lib"           value="shape_models_libmyplugins.so"/>
+        <param name="conf_thresh"   value="0.6"/>
+    </node>
+
+</launch>

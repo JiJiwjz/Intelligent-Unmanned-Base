@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find example)/scripts/rgbd_function/track_and_grab.launch">
+        <arg name="start" value="false"/>
+    </include>
+    <include file="$(find xf_mic_asr_offline)/launch/mic_init.launch"/>
+    <node pkg="example" type="vc_track_and_grab.py" name="vc_track_and_grab" output="screen"/>
+</launch>

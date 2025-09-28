@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<launch>
+    <!--模型存放路径(storage path for the model)-->
+    <!--参数名称，参数默认值(parameter name, parameter default value)-->
+    <arg name="model_path" default="$(find app)/models"/>
+
+    <!--启动ar增强节点(start ar augmentation node)-->
+    <!--节点名称，包名称，执行的程序，打印输出到屏幕(node name, package name, executed program, print and output to the screen)-->
+    <node name="ar_app" pkg="app" type="ar_app.py" output="screen">
+        <param name="model_path" type="string" value="$(arg model_path)"/>
+    </node>
+</launch>

@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!--自动拾取-->
+<launch>
+    <arg name="app"         default="false"/>
+    <arg name="sim"         default="false"/>
+    <arg name="test"         default="false"/>
+    <arg name="master_name"  default="/"/>
+    <arg name="robot_name"   default="/"/>
+    <rosparam file="$(find competition)/config/config.yaml"   command="load"/>
+    <!--机器人控制节点-->
+    <include file="$(find slam)/launch/include/robot.launch">
+        <arg name="sim"         value="$(arg sim)"/>
+        <arg name="app"         value="$(arg app)"/>
+        <arg name="use_joy"     value="true"/>
+        <arg name="robot_name"  value="$(arg robot_name)"/>
+        <arg name="master_name" value="$(arg master_name)"/>
+    </include>
+
+    <!--运动学节点(chassis driver)-->
+    <include file="$(find competition)/launch/kinematics_node.launch">
+    </include>
+
+    <!--形状识别-->
+    <node name="shape_recognition" pkg="competition" type="shape_recognition_down.py" output="screen" respawn="true">
+    </node>
+</launch>

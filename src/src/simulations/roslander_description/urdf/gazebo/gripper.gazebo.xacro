@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="gripper" xmlns:xacro="http://ros.org/wiki/xacro">
+    <gazebo>
+        <plugin name="mimic_plugin_r_out_link" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
+            <joint>r_joint</joint>
+            <mimicJoint>r_out_joint</mimicJoint>
+        </plugin>
+
+        <plugin name="mimic_plugin_r_in_link" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
+            <joint>r_joint</joint>
+            <mimicJoint>r_in_joint</mimicJoint>
+            <multiplier>-1</multiplier>
+            <offset>0.0</offset>
+        </plugin>
+
+        <plugin name="mimic_plugin_l_out_link" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
+            <joint>r_joint</joint>
+            <mimicJoint>l_out_joint</mimicJoint>
+            <multiplier>1</multiplier>
+            <offset>0.0</offset>
+        </plugin>
+
+        <plugin name="mimic_plugin_l_in_link" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
+            <joint>r_joint</joint>
+            <mimicJoint>l_in_joint</mimicJoint>
+            <multiplier>-1</multiplier>
+            <offset>0.0</offset>
+        </plugin>
+
+        <plugin name="mimic_plugin_l_link" filename="libroboticsgroup_upatras_gazebo_mimic_joint_plugin.so">
+            <joint>r_joint</joint>
+            <mimicJoint>l_joint</mimicJoint>
+            <multiplier>-1</multiplier>
+            <offset>0.0</offset>
+        </plugin>
+    </gazebo>
+
+    <xacro:macro name="model_color" params="link_name color_name">
+        <gazebo reference="${link_name}">
+            <material>Gazebo/${color_name}</material>
+            <turnGravityOff>false</turnGravityOff>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:model_color link_name="r_link"       color_name="black"/>
+    <xacro:model_color link_name="r_in_link"    color_name="black"/>
+    <xacro:model_color link_name="r_out_link"   color_name="black"/>
+    <xacro:model_color link_name="l_link"       color_name="black"/>
+    <xacro:model_color link_name="l_in_link"    color_name="black"/>
+    <xacro:model_color link_name="l_out_link"   color_name="black"/>
+</robot>

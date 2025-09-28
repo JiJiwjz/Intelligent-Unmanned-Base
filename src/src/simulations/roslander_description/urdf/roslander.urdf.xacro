@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="roslander" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:property name="lidar"        value="$(env LIDAR_TYPE)"/>
+  <xacro:include filename="$(find roslander_description)/urdf/inertial_matrix.xacro" />
+  <xacro:include filename="$(find roslander_description)/urdf/materials.xacro"/>
+  <xacro:property name="base_link_mass"     value="1.6" /> 
+  <xacro:property name="base_link_w"        value="0.302"/>
+  <xacro:property name="base_link_h"        value="0.145"/>
+  <xacro:property name="base_link_d"        value="0.05"/>
+
+  <xacro:property name="body_link_mass"     value="1.6" /> 
+  <xacro:property name="body_link_w"        value="0.288"/>
+  <xacro:property name="body_link_h"        value="0.145"/>
+  <xacro:property name="body_link_d"        value="0.092"/>
+
+  <xacro:property name="screen_link_mass"   value="0.5" /> 
+  <xacro:property name="screen_link_w"      value="0.067"/>
+  <xacro:property name="screen_link_h"      value="0.17"/>
+  <xacro:property name="screen_link_d"      value="0.31"/>
+
+  <xacro:property name="wheel_link_mass"    value="0.1" />
+  <xacro:property name="wheel_link_radius"  value="0.049"/>
+  <xacro:property name="wheel_link_length"  value="0.04167"/>
+
+  <link name="base_footprint"/>
+
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 0.04" rpy="0 0 0"/>
+  </joint>
+
+  <link
+    name="base_link">
+    <xacro:box_inertial m="${base_link_mass}" w="${base_link_w}" h="${base_link_h}" d="${base_link_d}"/>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.0015 0 ${base_link_d/2}"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="${base_link_w} ${base_link_h} ${base_link_d}" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="body_link">
+    <xacro:box_inertial m="${body_link_mass}" w="${body_link_w}" h="${body_link_h}" d="${body_link_d}"/>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/body_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="-0.005 0 ${body_link_d/2}"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="${body_link_w} ${body_link_h} ${body_link_d}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="body_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0.0496414362882255"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="body_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="lidar_link">
+    <inertial>
+      <origin
+        xyz="0.000511582656730666 0.00023264437801222 -0.0101267638965091"
+        rpy="0 0 0" />
+      <mass
+        value="0.165607195061176" />
+      <inertia
+        ixx="5.8847632803702E-05"
+        ixy="4.64192506225023E-07"
+        ixz="1.56622834751372E-07"
+        iyy="5.97028055863307E-05"
+        iyz="8.02856196156377E-08"
+        izz="0.000108240525493285" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/lidar_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+<!--    <collision>-->
+<!--      <origin-->
+<!--        xyz="0 0 0"-->
+<!--        rpy="0 0 0" />-->
+<!--      <geometry>-->
+<!--        <mesh-->
+<!--          filename="package://roslander_description/meshes/lidar_link.STL" />-->
+<!--      </geometry>-->
+<!--    </collision>-->
+  </link>
+  <joint
+    name="lidar_joint"
+    type="fixed">
+    <origin
+      xyz="0.0890864985819267 0 0.0650119118660841"
+      rpy="0 0 3.14159265358979" />
+    <parent
+      link="body_link" />
+    <child
+      link="lidar_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="screen_link">
+    <xacro:box_inertial m="${screen_link_mass}" w="${screen_link_w}" h="${screen_link_h}" d="${screen_link_d}"/>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/screen_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0.012 0 0.01"
+        rpy="0 0 0" />
+      <geometry>
+        <box size="${screen_link_w} ${screen_link_h} ${screen_link_d}" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="screen_joint"
+    type="fixed">
+    <origin
+      xyz="-0.15964232558058 0 0.236023036021671"
+      rpy="0 0 0" />
+    <parent
+      link="body_link" />
+    <child
+      link="screen_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="astra_camera_link">
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/depth_cam_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+  </link>
+  <joint
+    name="astra_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0.0255053534641942 0 0.151269407648836"
+      rpy="0 0 0" />
+    <parent
+      link="screen_link" />
+    <child
+      link="astra_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="-3.08199229505715E-06 0.00222700158480936 0.0221204661486996"
+        rpy="0 0 0" />
+      <mass value="0.00001" />
+      <inertia
+        ixx="10"
+        ixy="0"
+        ixz="0"
+        iyy="10"
+        iyz="0"
+        izz="10" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0.0242158355469854 0 0.10038781456281"
+      rpy="0 0 0" />
+    <parent
+      link="body_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="-6.14196622439646E-05 0.000501310181464599 0.0717730992576573"
+        rpy="0 0 0" />
+      <mass value="0.00001" />
+      <inertia
+        ixx="10"
+        ixy="0"
+        ixz="0"
+        iyy="10"
+        iyz="0"
+        izz="10" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0.0353438388222273"
+      rpy="0 0 0" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-1.8326"
+      upper="1.8326"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="1.29619195029761E-05 0.000807679689685348 0.0717731397355716"
+        rpy="0 0 0" />
+      <mass value="0.00001" />
+      <inertia
+        ixx="10"
+        ixy="0"
+        ixz="0"
+        iyy="10"
+        iyz="0"
+        izz="10" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="0 0 0.129311682614577"
+      rpy="0 0 0" />
+    <parent
+      link="link2" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="-0.000261855576526311 0.000239368359066633 0.0220971301535388"
+        rpy="0 0 0" />
+      <mass
+        value="0.00959141779390409" />
+      <inertia
+        ixx="7.94977139591732E-06"
+        ixy="-8.29446018776969E-10"
+        ixz="5.6880898756802E-08"
+        iyy="4.29063067361656E-06"
+        iyz="-1.84622131688891E-10"
+        izz="5.33833388813501E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="0 0 0.129444631186569"
+      rpy="0 0 0" />
+    <parent
+      link="link3" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="servo_link2">
+    <inertial>
+      <origin
+        xyz="0.00829457691057159 0.000114732113040695 -0.0125525321145837"
+        rpy="0 0 0" />
+      <mass
+        value="0.00701021225113507" />
+      <inertia
+        ixx="6.10646998888003E-07"
+        ixy="1.66839713815154E-09"
+        ixz="-2.07626862362467E-08"
+        iyy="9.477990166652E-07"
+        iyz="5.12927100881908E-09"
+        izz="1.44691449724265E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/servo_link2.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/servo_link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="servo_joint2"
+    type="fixed">
+    <origin
+      xyz="0 0 0.0544833339503674"
+      rpy="0 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="servo_link2" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="-5.40141895711381E-05 -8.30141354428709E-06 0.00351551092860852"
+        rpy="0 0 0" />
+      <mass
+        value="0.00101775298619909" />
+      <inertia
+        ixx="2.35834256739382E-08"
+        ixy="-1.92177809145012E-12"
+        ixz="-3.88572739181837E-12"
+        iyy="2.35740360938003E-08"
+        iyz="-1.1228386368903E-13"
+        izz="4.40224050991292E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="servo_link2" />
+    <child
+      link="link5" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="-2.09"
+      upper="2.09"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="gripper_link">
+    <inertial>
+      <origin
+        xyz="0.0145481835889059 -0.00315257290321308 0.0253492053712461"
+        rpy="0 0 0" />
+      <mass
+        value="0.0174988490314194" />
+      <inertia
+        ixx="4.12615692688456E-06"
+        ixy="-2.75102939068049E-08"
+        ixz="-7.61180742281118E-09"
+        iyy="1.57023365316943E-06"
+        iyz="2.2563082379695E-08"
+        izz="3.2612101868791E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/gripper_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/gripper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gripper_joint"
+    type="fixed">
+    <origin
+      xyz="0 0 0.0054388"
+      rpy="0 0 0" />
+    <parent
+      link="link5" />
+    <child
+      link="gripper_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <!-- end effector link -->
+  <link name="end_effector_link" />
+
+  <joint name="end_effector_joint" type="fixed">
+    <origin xyz="0 0 0.08" rpy="0 0 0"/>
+    <parent link="link5"/>
+    <child link="end_effector_link"/>
+  </joint>
+  <link
+    name="r_link">
+    <inertial>
+      <origin
+        xyz="0.00154652142582958 0.000534112070478834 0.00624030428121536"
+        rpy="0 0 0" />
+      <mass
+        value="0.00206265647704866" />
+      <inertia
+        ixx="3.97215843669342E-07"
+        ixy="-2.75699120579387E-10"
+        ixz="-2.19901048536124E-09"
+        iyy="3.22472627342115E-07"
+        iyz="1.07303783544668E-08"
+        izz="7.78708186672131E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="r_joint"
+    type="revolute">
+    <origin
+      xyz="-0.0073166 -0.013992 0.027059"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="r_link" />
+    <axis
+      xyz="0.99996 -0.004699 -0.0070434" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+  </joint>
+  <link
+    name="l_link">
+    <inertial>
+      <origin
+        xyz="0.0015384031888858 -0.000403232726847674 0.00579759783012201"
+        rpy="0 0 0" />
+      <mass
+        value="0.00218924933187322" />
+      <inertia
+        ixx="4.0534152698165E-07"
+        ixy="3.60077827494503E-10"
+        ixz="-1.99675888093364E-09"
+        iyy="3.31222174181852E-07"
+        iyz="-8.79337758250917E-09"
+        izz="7.74319582642917E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="l_joint"
+    type="revolute">
+    <origin
+      xyz="-0.0073352 0.013977 0.027057"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="l_link" />
+    <axis
+      xyz="0.99997 0.0055811 -0.0058397" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+    <mimic
+      joint="r_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="l_in_link">
+    <inertial>
+      <origin
+        xyz="0.00610191812065245 2.91459132896708E-05 0.0144573768632076"
+        rpy="0 0 0" />
+      <mass
+        value="0.000776872870694597" />
+      <inertia
+        ixx="9.87455572181138E-08"
+        ixy="5.06340928475727E-12"
+        ixz="-6.79685646256186E-10"
+        iyy="9.76635148452203E-08"
+        iyz="-6.12115908323794E-12"
+        izz="2.25695364751658E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_in_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_in_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="l_in_joint"
+    type="revolute">
+    <origin
+      xyz="-0.0071623 0.0049403 0.046019"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="l_in_link" />
+    <axis
+      xyz="0.99996 0.0046983 -0.0070439" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+    <mimic
+      joint="r_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="l_out_link">
+    <inertial>
+      <origin
+        xyz="0.00602407836518577 0.0014461936314294 0.00961214041434189"
+        rpy="0 0 0" />
+      <mass
+        value="0.00384735908281124" />
+      <inertia
+        ixx="8.77337978935691E-07"
+        ixy="1.36760329013846E-09"
+        ixz="-6.9462127438421E-09"
+        iyy="8.19648792008027E-07"
+        iyz="1.56177294727923E-07"
+        izz="7.0687486597803E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_out_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/l_out_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="l_out_joint"
+    type="revolute">
+    <origin
+      xyz="0.00020427 0 0.028999"
+      rpy="0 0 0" />
+    <parent
+      link="l_in_link" />
+    <child
+      link="l_out_link" />
+    <axis
+      xyz="0.99996 0.0046983 -0.0070439" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+    <mimic
+      joint="r_joint"
+      multiplier="1"
+      offset="0" />
+  </joint>
+  <link
+    name="r_in_link">
+    <inertial>
+      <origin
+        xyz="0.00610191812065006 -2.81924690068705E-05 0.0144573787538957"
+        rpy="0 0 0" />
+      <mass
+        value="0.000776872870694522" />
+      <inertia
+        ixx="9.87465668171204E-08"
+        ixy="-5.11173808106636E-12"
+        ixz="-6.79692406191707E-10"
+        iyy="9.7664293636849E-08"
+        iyz="-5.14018800149497E-13"
+        izz="2.25718458778487E-09" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_in_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_in_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="r_in_joint"
+    type="revolute">
+    <origin
+      xyz="-0.0071623 -0.004943 0.046019"
+      rpy="0 0 0" />
+    <parent
+      link="gripper_link" />
+    <child
+      link="r_in_link" />
+    <axis
+      xyz="-0.99996 0.0046987 0.0070436" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+    <mimic
+      joint="r_joint"
+      multiplier="-1"
+      offset="0" />
+  </joint>
+  <link
+    name="r_out_link">
+    <inertial>
+      <origin
+        xyz="0.0060622 -0.0014474 0.0096107"
+        rpy="0 0 0" />
+      <mass
+        value="0.0038474" />
+      <inertia
+        ixx="8.7734E-07"
+        ixy="-1.2815E-09"
+        ixz="-6.7006E-09"
+        iyy="8.1957E-07"
+        iyz="-1.5635E-07"
+        izz="7.0761E-08" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_out_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/r_out_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="r_out_joint"
+    type="revolute">
+    <origin
+      xyz="0.00020427 0 0.028999"
+      rpy="0 0 0" />
+    <parent
+      link="r_in_link" />
+    <child
+      link="r_out_link" />
+    <axis
+      xyz="-0.99996 0.0046987 0.0070436" />
+    <limit
+      lower="-1.57"
+      upper="1.57"
+      effort="1000"
+      velocity="10" />
+    <mimic
+      joint="r_joint"
+      multiplier="1"
+      offset="0" />
+  </joint>
+  <link
+    name="wheel_front_right_link">
+    <xacro:cylinder_inertial m="${wheel_link_mass}" r="${wheel_link_radius}" h="${wheel_link_length}" />
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/wheel_front_right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0.003 0"
+        rpy="${M_PI/2} 0 0" />
+      <geometry>
+        <cylinder length="${wheel_link_length}" radius="${wheel_link_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_front_right_joint"
+    type="fixed">
+    <origin
+      xyz="0.096499 -0.1121 0.010864"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_front_right_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="wheel_front_left_link">
+    <xacro:cylinder_inertial m="${wheel_link_mass}" r="${wheel_link_radius}" h="${wheel_link_length}" />
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/wheel_front_left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.003 0"
+        rpy="${M_PI/2} 0 0" />
+      <geometry>
+        <cylinder length="${wheel_link_length}" radius="${wheel_link_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_front_left_joint"
+    type="fixed">
+    <origin
+      xyz="0.096499 0.11216 0.010864"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_front_left_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="wheel_rear_left_link">
+    <xacro:cylinder_inertial m="${wheel_link_mass}" r="${wheel_link_radius}" h="${wheel_link_length}" />
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/wheel_rear_left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 -0.003 0"
+        rpy="${M_PI/2} 0 0" />
+      <geometry>
+        <cylinder length="${wheel_link_length}" radius="${wheel_link_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_rear_left_joint"
+    type="fixed">
+    <origin
+      xyz="-0.098528 0.11216 0.010864"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_rear_left_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="wheel_rear_right_link">
+    <xacro:cylinder_inertial m="${wheel_link_mass}" r="${wheel_link_radius}" h="${wheel_link_length}" />
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/wheel_rear_right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.3 0.3 0.3 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0.003 0"
+        rpy="${M_PI/2} 0 0" />
+      <geometry>
+        <cylinder length="${wheel_link_length}" radius="${wheel_link_radius}"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="wheel_rear_right_joint"
+    type="fixed">
+    <origin
+      xyz="-0.098528 -0.1121 0.010864"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_rear_right_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="camera_connect_link">
+    <inertial>
+      <origin
+        xyz="-0.00050566 0.010186 0.0012735"
+        rpy="0 0 0" />
+      <mass
+        value="0.0029007" />
+      <inertia
+        ixx="4.5276E-07"
+        ixy="-3.2151E-10"
+        ixz="-8.627E-12"
+        iyy="5.4068E-07"
+        iyz="-1.2081E-08"
+        izz="9.9085E-07" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/camera_connect_link.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/camera_connect_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="camera_connect_joint"
+    type="fixed">
+    <origin
+      xyz="-0.0507060266977644 0 0.0505384841187764"
+      rpy="0 0 -1.57079632679489" />
+    <parent
+      link="link4" />
+    <child
+      link="camera_connect_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="gemini_camera_link">
+    <inertial>
+      <origin
+        xyz="0.00232981322860787 0.000387137406184821 -2.84059740606052E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.015428" />
+      <inertia
+        ixx="1.3945E-06"
+        ixy="-1.5684E-08"
+        ixz="-2.3104E-07"
+        iyy="1.2848E-05"
+        iyz="1.3156E-09"
+        izz="1.361E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/depth_cam_link_arm.STL" />
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://roslander_description/meshes/depth_cam_link_arm.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="gemini_camera_joint"
+    type="fixed">
+    <origin
+      xyz="0 0.0 0.014475"
+      rpy="${M_PI} -${M_PI/2} -${M_PI/2}"/>
+    <parent
+      link="camera_connect_link" />
+    <child
+      link="gemini_camera_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link name="depth_cam_frame" />
+  <joint
+    name="depth_cam_joint_sim"
+    type="fixed">
+    <origin xyz="0 0 0" rpy="${-M_PI/2} 0 ${-M_PI/2}" />
+    <parent link="astra_camera_link" />
+    <child link="depth_cam_frame" />
+  </joint>
+  <link name="imu_link"/>
+  <joint
+    name="imu_joint"
+    type="fixed">
+    <origin
+      xyz="0.0048416 0.011168 0.07"
+      rpy="${M_PI} 0 -${M_PI/2}" />
+    <parent
+      link="base_link" />
+    <child
+      link="imu_link" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link name="lidar_sim_frame" />
+  <joint
+    name="lidar_sim_frame_joint"
+    type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 ${M_PI}" />
+    <parent link="lidar_link" />
+    <child link="lidar_sim_frame" />
+  </joint>
+  <xacro:if value="${lidar == 'S2L'}">
+    <xacro:include filename="$(find roslander_description)/urdf/lidar_s2l.urdf.xacro"/>
+  </xacro:if>
+  <xacro:if value="${lidar == 'G4'}">
+    <xacro:include filename="$(find roslander_description)/urdf/lidar_g4.urdf.xacro"/>
+  </xacro:if>
+
+</robot>

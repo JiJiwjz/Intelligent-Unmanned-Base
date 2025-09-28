@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--点云查看-->
+<launch>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen">
+        <param name="horizontal" value="true"/>
+    </node>
+
+    <!--深度摄像头-->
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find example)/rviz/depth_cam_point_cloud.rviz" />
+</launch>

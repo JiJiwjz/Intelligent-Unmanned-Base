@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--线速度校准(linear velocity calibration)-->
+<launch>
+    <arg name="linear"          default="true"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <!--线速度校准(linear velocity calibration)-->
+    <node name="calibrate_linear" pkg="calibration" type="calibrate_linear.py" output="screen"/>
+
+    <node name="init_pose" pkg="slam" type="init_pose.py" output="screen"/>
+
+    <!--rqt-->
+    <node pkg="rqt_reconfigure" type="rqt_reconfigure" name="calibrate_rqt_reconfigure"/>
+
+    <!--参数重赋值(reassign the parameter)-->
+    <param if="$(arg linear)" name="/odom_publisher/linear_correction_factor"   value="1.0"/>
+</launch>

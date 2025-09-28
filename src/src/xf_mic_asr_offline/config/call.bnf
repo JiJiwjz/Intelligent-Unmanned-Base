@@ -1,0 +1,14 @@
+﻿#BNF+IAT 1.0 UTF-8;
+!grammar call;
+
+!start <callstart>;
+
+<callstart>:<move>|<moveen>|<navigation>|<navigationen>|<action>|<actionen>|<competition>;
+<move>:前进|后退|左转|右转|停下|漂移;
+<competition>:开始执行任务;
+<moveen>:go forward|go backward|turn left|turn right|stop|drift;
+<navigation>:去(A|B|C)点|回原点|导航搬运;
+<navigationen>:go to (A|B|C) point|go back to the start;
+<action>:过来|(开启|关闭)颜色(识别|分拣)|(追踪|夹取)(红色|绿色|蓝色)|停止追踪|(开启|关闭)垃圾分类|拔个萝卜|拿给我|夹取(球体|圆柱体|立方体)|关闭夹取;
+<actionen>:come here|(start|stop) color recognition|(track|gripping) (red|green|blue) object|stop tracking
+|(start|stop) color sorting|sort waste|stop sort waste|pick a carrot|pass me please|navigate and transport|gripping the (sphere|cylinder|cuboid)|stop gripping;

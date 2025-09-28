@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+    <!--启动手势控制节点-->
+    <!--节点名称，包名称，执行的程序，打印输出到屏幕(node name, package name, executed program, print and output to the screen)-->
+    <node pkg="app" type="hand_trajectory_node.py" name="hand_trajectory" output="screen">
+        <param name="start" value="false"/>
+    </node>
+    <node name="hand_gesture" pkg="app" type="hand_gesture.py" output="screen"/>
+</launch>

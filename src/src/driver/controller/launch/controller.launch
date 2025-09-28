@@ -1,0 +1,80 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="freq"              default="50"/>
+    <arg name="enable_odom"       default="true"/>
+    <arg name="odom_topic"        default="odom"/>
+    <arg name="odom_raw_topic"    default="odom_raw"/>
+    <arg name="odom_frame"        default="odom"/>
+    <arg name="base_frame"        default="base_footprint"/>
+    <arg name="lidar_frame"       default="lidar_frame"/>
+    <arg name="odom_lidar_topic"  default="odom_lidar"/>
+    <arg name="scan_topic"        default="scan"/>
+    <arg name="map_frame"         default="map"/>
+    <arg name="cmd_vel"           default="controller/cmd_vel"/>
+    <arg name="imu_raw_topic"     default="/ros_robot_controller/imu_raw"/>
+    <arg name="imu_topic"         default="imu"/>
+    <arg name="imu_link"          default="imu_link"/>
+    <arg name="tf_prefix"         default=""/>
+
+    <!--机器人urdf模型加载-->
+    <param name="robot_description" command="$(find xacro)/xacro '$(find roslander_description)/urdf/roslander.urdf.xacro'" />
+
+    <!--静态tf发布-->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" >
+        <param name="tf_prefix" value="$(arg tf_prefix)" />
+    </node>
+
+    <!--ROS Robot Controller板节点-->
+    <include file="$(find ros_robot_controller)/launch/ros_robot_controller_node.launch">
+        <arg name="freq"    value="$(arg freq)"/>
+        <arg name="imu_link" value="$(arg imu_link)"/>
+    </include>
+
+    <!--舵机节点-->
+    <include file="$(find servo_controllers)/launch/start.launch">
+        <arg name="base_frame"   value="$(arg base_frame)" />
+    </include>
+
+    <!--imu校准融合-->
+    <include file="$(find peripherals)/launch/imu_base.launch">
+        <arg name="imu_raw_topic" value="$(arg imu_raw_topic)"/>
+        <arg name="imu_topic"     value="$(arg imu_topic)"/>
+    </include>
+
+    <!--odom发布-->
+    <node name="odom_publisher" pkg="controller" type="odom_publisher.py" required="true" output="screen">
+        <rosparam file="$(find controller)/config/calibrate_params.yaml" command="load"/>    
+        <param name="freq"              value="$(arg freq)"/>
+        <param name="odom_topic"        value="$(arg odom_raw_topic)"/>
+        <param name="base_frame_id"     value="$(arg base_frame)"/>
+        <param name="odom_frame_id"     value="$(arg odom_frame)"/>
+        <param name="cmd_vel"           value="$(arg cmd_vel)"/>
+    </node>
+
+    <group if="$(arg enable_odom)">
+        <!--lidar odom-->
+        <!--<include file="$(find slam)/launch/include/lidar_odometry.launch">-->
+            <!--<arg name="odom_frame"          value="$(arg odom_frame)"/>-->
+            <!--<arg name="base_frame"          value="$(arg base_frame)"/>-->
+            <!--<arg name="lidar_frame"         value="$(arg lidar_frame)"/>-->
+            <!--<arg name="scan_topic"          value="$(arg scan_topic)"/>-->
+            <!--<arg name="odom_lidar_topic"    value="$(arg odom_lidar_topic)"/>-->
+        <!--</include>-->
+
+        <!--ekf融合-->
+
+        <!--yct add :ekf融合应该使用无漂移的imu_corrected!-->
+        <!--yct add :但是不用imu就没法正常定位，很奇怪！-->
+        <!--yct add :铸币了，imu_correct里面没有位姿四元数，所以得用经过imu_tools解算后的topic，即imu-->
+        <include file="$(find slam)/launch/include/ekf.launch">
+            <arg name="odom_topic"       value="$(arg odom_topic)"/>
+            <arg name="odom_raw_topic"   value="$(arg odom_raw_topic)"/>
+            <arg name="odom_lidar_topic" value="$(arg odom_lidar_topic)"/>
+            <arg name="imu_topic"        value="$(arg imu_topic)"/>
+            <!-- <arg name="imu_topic"        value="imu_corrected"/> -->
+            <arg name="map_frame"        value="$(arg map_frame)"/>
+            <arg name="base_frame"       value="$(arg base_frame)"/>
+            <arg name="odom_frame"       value="$(arg odom_frame)"/>
+        </include>
+    </group>
+</launch>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<!--颜色追踪-->
+<launch>
+    <arg name="start"           default="true"/>
+    <arg name="enable_display"  default="false"/>
+
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find kinematics)/launch/kinematics_node.launch"/>
+    <include file="$(find example)/scripts/color_detect/color_detect_node.launch">
+        <arg name="enable_display" value="$(arg enable_display)"/>
+    </include>
+
+    <node pkg="example" type="color_track_node.py" name="color_track" output="screen">
+        <param name="start" value="$(arg start)"/>
+    </node>
+</launch>

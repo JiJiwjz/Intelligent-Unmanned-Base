@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="only_line_follow"    default="false"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+
+    <arg name="node_name" default="yolov5" />
+    <rosparam param="/$(arg node_name)/classes">['go', 'right', 'park', 'red', 'green', 'crosswalk']</rosparam>
+    <node unless="$(arg only_line_follow)" pkg="example" type="yolov5_node.py" name="$(arg node_name)" output="screen">
+        <param name="engine"        value="traffic_signs_640s_7_0.engine"/>
+        <param name="lib"           value="libmyplugins_640.so"/>
+        <param name="conf_thresh"   value="0.75"/>
+    </node>
+
+    <node pkg="example" type="self_driving.py" name="self_driving" output="screen">
+        <param name="start"             value="true"/>
+        <param name="only_line_follow"    value="$(arg only_line_follow)"/>
+    </node>
+</launch>

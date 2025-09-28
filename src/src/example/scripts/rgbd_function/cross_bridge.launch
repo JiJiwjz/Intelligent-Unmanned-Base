@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="debug"   default="false"/>
+    <!--底盘驱动(chassis driver)-->
+    <include file="$(find controller)/launch/controller.launch"/>
+    <include file="$(find peripherals)/launch/depth_cam.launch"/>
+    <node pkg="example" type="cross_bridge_node.py" name="cross_bridge" output="screen">
+        <param name="debug" value="$(arg debug)"/>
+        <rosparam file="$(find example)/config/bridge_plane_distance.yaml"   command="load"/>
+    </node>
+</launch>

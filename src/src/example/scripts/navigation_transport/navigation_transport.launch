@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--导航夹取-->
+<launch>
+    <arg name="map"                 default=""/>
+    <arg name="debug"               default="false"/>
+    <arg name="place_without_color" default="true"/>
+    <arg name="broadcast"           default="false"/>
+
+    <include file="$(find navigation)/launch/include/load_map.launch">
+        <arg name="robot_name"  value="/"/>
+        <arg name="map"         value="$(arg map)"/>
+    </include>
+
+    <include file="$(find navigation)/launch/include/navigation_base.launch">
+        <arg name="master_name" value="/"/>
+        <arg name="robot_name"  value="/"/>
+    </include>
+
+    <include file="$(find example)/scripts/navigation_transport/automatic_pick.launch">
+        <arg name="debug"               value="$(arg debug)"/>
+        <arg name="broadcast"           value="$(arg broadcast)"/>
+        <arg name="place_without_color" value="$(arg place_without_color)"/>
+    </include>
+
+    <node name="navigation_transport" pkg="example" type="navigation_transport.py" output="screen">
+        <param name="map_frame"         value="map"/>
+        <param name="nav_goal"          value="/nav_goal"/>
+        <param name="move_base_result"  value="/move_base/result"/>
+    </node>
+
+    <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find example)/rviz/navigation_transport.rviz"/>
+</launch>

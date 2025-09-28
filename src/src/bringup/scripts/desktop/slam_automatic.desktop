@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=SLAM Automatic
+Comment=SLAM Automatic Program
+Encoding=UTF-8
+Exec=zsh /home/ubuntu/ros_ws/src/bringup/scripts/slam_automatic.sh
+Terminal=true
+MultipleArgs=false
+Type=Application
+Categories=Application;Development;
+StartupNotify=true
